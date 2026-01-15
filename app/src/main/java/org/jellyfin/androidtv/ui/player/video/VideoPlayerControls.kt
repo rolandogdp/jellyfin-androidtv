@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import org.jellyfin.androidtv.R
+import org.jellyfin.androidtv.preference.SubtitleDelayManager
 import org.jellyfin.androidtv.ui.base.Icon
 import org.jellyfin.androidtv.ui.base.LocalTextStyle
 import org.jellyfin.androidtv.ui.base.Text
@@ -43,15 +44,19 @@ import org.jellyfin.playback.core.PlaybackManager
 import org.jellyfin.playback.core.model.PlayState
 import org.jellyfin.playback.core.queue.queue
 import org.koin.compose.koinInject
+import java.util.Locale
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
+import kotlin.math.abs
 
 @Composable
 fun VideoPlayerControls(
 	playbackManager: PlaybackManager = koinInject()
 ) {
 	val playState by playbackManager.state.playState.collectAsState()
+	val subtitleDelayManager = koinInject<SubtitleDelayManager>()
+	val subtitleDelayMs by subtitleDelayManager.delayMsFlow.collectAsState()
 
 	Column(
 		verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Bottom),
@@ -71,6 +76,11 @@ fun VideoPlayerControls(
 			MoreOptionsButton {
 				PreviousEntryButton(playbackManager)
 				NextEntryButton(playbackManager)
+				SubtitleDelayControls(
+					subtitleDelayMs = subtitleDelayMs,
+					onDecrease = subtitleDelayManager::decrement,
+					onIncrease = subtitleDelayManager::increment,
+				)
 			}
 		}
 
@@ -205,6 +215,46 @@ private fun NextEntryButton(
 	}
 }
 
+@Composable
+private fun SubtitleDelayControls(
+	subtitleDelayMs: Long,
+	onDecrease: () -> Unit,
+	onIncrease: () -> Unit,
+) {
+	Column(
+		horizontalAlignment = Alignment.CenterHorizontally,
+		verticalArrangement = Arrangement.spacedBy(6.dp),
+	) {
+		Text(
+			text = stringResource(R.string.lbl_subtitle_delay),
+			style = LocalTextStyle.current.copy(color = Color.White),
+		)
+		Row(
+			horizontalArrangement = Arrangement.spacedBy(8.dp),
+			verticalAlignment = Alignment.CenterVertically,
+		) {
+			IconButton(onClick = onDecrease) {
+				Icon(
+					imageVector = ImageVector.vectorResource(R.drawable.ic_decrease),
+					contentDescription = stringResource(R.string.lbl_subtitle_delay_decrease),
+				)
+			}
+
+			Text(
+				text = formatSubtitleDelay(subtitleDelayMs),
+				style = LocalTextStyle.current.copy(color = Color.White),
+			)
+
+			IconButton(onClick = onIncrease) {
+				Icon(
+					imageVector = ImageVector.vectorResource(R.drawable.ic_increase),
+					contentDescription = stringResource(R.string.lbl_subtitle_delay_increase),
+				)
+			}
+		}
+	}
+}
+
 private fun Duration.formatted(includeHours: Boolean): String {
 	val totalSeconds = toInt(DurationUnit.SECONDS)
 	val hours = totalSeconds / 3600
@@ -236,6 +286,13 @@ private fun PositionText(
 		text = text,
 		style = LocalTextStyle.current.copy(color = Color.White)
 	)
+}
+
+private fun formatSubtitleDelay(delayMs: Long): String {
+	if (delayMs == 0L) return "0.0s"
+	val seconds = abs(delayMs) / 1000.0
+	val sign = if (delayMs > 0L) "+" else "-"
+	return String.format(Locale.US, "%s%.1fs", sign, seconds)
 }
 
 @Composable

@@ -239,6 +239,8 @@
     <string name="lbl_news">News</string>
     <string name="lbl_new_only">New only</string>
     <string name="lbl_subtitle_delay">Subtitle delay</string>
+    <string name="lbl_subtitle_delay_decrease">Decrease subtitle delay</string>
+    <string name="lbl_subtitle_delay_increase">Increase subtitle delay</string>
     <string name="lbl_new_episodes">New episodes</string>
     <string name="lbl_premieres">Premieres</string>
     <string name="lbl_repeat_episodes">Repeat episodes</string>
