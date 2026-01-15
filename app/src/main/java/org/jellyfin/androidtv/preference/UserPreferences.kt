@@ -187,6 +187,11 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		var subtitlesOffsetPosition = floatPreference("subtitles_offset_position", 0.08f)
 
 		/**
+		 * Subtitle delay in milliseconds.
+		 */
+		var subtitleDelayMs = intPreference("subtitle_delay_ms", 0)
+
+		/**
 		 * Show screensaver in app
 		 */
 		var screensaverInAppEnabled = booleanPreference("screensaver_inapp_enabled", true)

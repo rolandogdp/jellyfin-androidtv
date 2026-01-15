@@ -7,4 +7,5 @@ data class ExoPlayerOptions(
 	val preferFfmpeg: Boolean = false,
 	val enableDebugLogging: Boolean = false,
 	val baseDataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory(),
+	val subtitleDelayMsProvider: () -> Long = { 0L },
 )

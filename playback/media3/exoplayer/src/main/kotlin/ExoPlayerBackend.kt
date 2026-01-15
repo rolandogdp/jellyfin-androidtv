@@ -71,7 +71,10 @@ class ExoPlayerBackend(
 		}
 
 		val mediaSourceFactory = DefaultMediaSourceFactory(dataSourceFactory, extractorsFactory)
-		val renderersFactory = DefaultRenderersFactory(context).apply {
+		val renderersFactory = OffsetRenderersFactory(
+			context,
+			subtitleDelayMsProvider = exoPlayerOptions.subtitleDelayMsProvider,
+		).apply {
 			setEnableDecoderFallback(true)
 			setExtensionRendererMode(
 				when (exoPlayerOptions.preferFfmpeg) {
