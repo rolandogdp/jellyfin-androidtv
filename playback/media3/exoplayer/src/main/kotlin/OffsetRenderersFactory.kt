@@ -2,10 +2,10 @@ package org.jellyfin.playback.media3.exoplayer
 
 import android.content.Context
 import android.os.Looper
-import androidx.media3.common.text.TextOutput
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.Renderer
+import androidx.media3.exoplayer.text.TextOutput
 
 @UnstableApi
 class OffsetRenderersFactory(
